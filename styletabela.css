@@ -1,0 +1,89 @@
+body {
+    background-image: linear-gradient(to right, #222222, #202020);
+    font: normal 14pt Helvetica;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.tabela-corpo {
+    color: rgb(243, 243, 243);
+    width: 70%;
+    margin: 20px auto;
+    background-color: #2e2e2e;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse; 
+    background-color: #333333;
+}
+
+th, td {
+    border: 1px solid rgb(243, 243, 243); 
+    padding: 10px;
+    text-align: left;
+    color: white;
+}
+
+th {
+    background-color: #444444;
+    font-weight: bold;
+}
+
+tr {
+    transition: 0.4s;
+}
+
+tr:hover {
+    background-color: #494949;
+    transition: 0.4s;
+}
+
+#container-editar {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 500px;
+    height: 600px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 15px;
+    background-color: #2e2e2e;
+    color: white;
+    padding: 20px;
+    z-index: 1000;
+    display: none; 
+}
+
+#container-editar .button-container {
+    display: flex;
+    justify-content: space-between; /* Posiciona os botões lado a lado */
+    margin-top: 20px;
+}
+
+#container-editar input {
+    width: 100%;
+    margin-bottom: 15px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #444444;
+    color: white;
+}
+
+#container-editar button {
+    width: 48%;
+    margin-right: 2%;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+}
+

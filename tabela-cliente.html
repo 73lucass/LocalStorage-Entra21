@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="styletabela.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<body>
+    <div id="container-editar">
+        <h3>Editar Cliente</h3>
+        <label for="editar-nome">Nome Completo:</label>
+        <input type="text" id="editar-nome" class="form-control">
+        <label for="editar-email">Email:</label>
+        <input type="email" id="editar-email" class="form-control">
+        <label for="editar-telefone">Telefone:</label>
+        <input type="text" id="editar-telefone" class="form-control">
+        <label for="editar-cep">CEP:</label>
+        <input type="text" id="editar-cep" class="form-control" onblur="atualizarEnderecoPorCep()">
+            <button onclick="salvarEdicao()" class="btn btn-primary" style="font-size: 15px;">Salvar</button>
+            <button onclick="fecharEdicao()" class="btn btn-dark" style="font-size: 15px;">Cancelar</button>
+        </div>
+    </div>
+    <div class="tabela-corpo">
+        <h2>Tabela de Informações</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Nome Completo</th>
+                    <th>Email</th>
+                    <th>Telefone</th>
+                    <th>Cep</th>
+                    <th>Rua</th>
+                    <th>Bairro</th>
+                    <th>Cidade</th>
+                    <th>Estado</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody id="tabela-corpo">
+            </tbody>
+        </table>
+    </div>
+    <script>
+
+        let informacoes = JSON.parse(localStorage.getItem('informacoes')) || []
+
+        const tabelaCorpo = document.getElementById('tabela-corpo')
+
+        function renderizarTabela() {
+            let linhas = '';
+            for (let i = 0; i < informacoes.length; i++) {
+                linhas += `
+                    <tr>
+                        <td>${informacoes[i].nome}</td>
+                        <td>${informacoes[i].email}</td>
+                        <td>${informacoes[i].tel}</td>
+                        <td>${informacoes[i].cep}</td>
+                        <td>${informacoes[i].rua}</td>
+                        <td>${informacoes[i].bairro}</td>
+                        <td>${informacoes[i].cidade}</td>
+                        <td>${informacoes[i].estado}</td>
+                        <td><button onclick="apagarCliente(${i})" class="btn btn-danger">Excluir</button>
+                        <button onclick="editarCliente(${i})" class="btn btn-success    ">Editar</button>
+                        <a href="localizadorcep.html"><button class="btn btn-primary">Voltar</button></a></td>
+                    </tr>
+                `
+            }
+            tabelaCorpo.innerHTML = linhas;
+        }
+
+        function apagarCliente(index) {
+
+            informacoes.splice(index, 1);
+
+            localStorage.setItem('informacoes', JSON.stringify(informacoes));
+
+            renderizarTabela();
+        }
+
+        renderizarTabela();
+
+        let clienteEditandoIndex = null;
+
+        function editarCliente(index) {
+            clienteEditandoIndex = index;
+
+            document.getElementById('editar-nome').value = informacoes[index].nome;
+            document.getElementById('editar-email').value = informacoes[index].email;
+            document.getElementById('editar-telefone').value = informacoes[index].tel;
+            document.getElementById('editar-cep').value = informacoes[index].cep;
+
+            document.getElementById('container-editar').style.display = 'block';
+        }
+
+        function salvarEdicao() {
+            informacoes[clienteEditandoIndex].nome = document.getElementById('editar-nome').value;
+            informacoes[clienteEditandoIndex].email = document.getElementById('editar-email').value;
+            informacoes[clienteEditandoIndex].tel = document.getElementById('editar-telefone').value;
+            informacoes[clienteEditandoIndex].cep = document.getElementById('editar-cep').value;
+
+            localStorage.setItem('informacoes', JSON.stringify(informacoes));
+
+            renderizarTabela();
+
+            fecharEdicao();
+        }
+
+        function fecharEdicao() {
+            document.getElementById('container-editar').style.display = 'none';
+        }
+        function atualizarEnderecoPorCep() {
+    const cep = document.getElementById('editar-cep').value.trim();
+
+    if (cep.length !== 8 || isNaN(cep)) {
+    alert('Por favor, insira um CEP válido!');
+    return;
+}
+
+    fetch(`https://viacep.com.br/ws/${cep}/json/`)
+        .then(resposta => resposta.json())
+        .then(dados => {
+            if (dados.erro) {
+                alert('CEP não encontrado. Verifique e tente novamente!');
+            } else {
+              
+                informacoes[clienteEditandoIndex].rua = dados.logradouro || '';
+                informacoes[clienteEditandoIndex].bairro = dados.bairro || '';
+                informacoes[clienteEditandoIndex].cidade = dados.localidade || '';
+                informacoes[clienteEditandoIndex].estado = dados.uf || '';
+
+                document.getElementById('editar-nome').value = informacoes[clienteEditandoIndex].nome;
+                document.getElementById('editar-email').value = informacoes[clienteEditandoIndex].email;
+                document.getElementById('editar-telefone').value = informacoes[clienteEditandoIndex].tel;
+                document.getElementById('editar-cep').value = informacoes[clienteEditandoIndex].cep;
+
+                alert('Endereço atualizado com sucesso!');
+            }
+        })
+        .catch(() => {
+            alert('Houve um erro ao consultar o CEP. Tente novamente mais tarde.');
+        });
+}
+    </script>
+</body>
+
+</html>
