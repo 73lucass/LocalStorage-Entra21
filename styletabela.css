@@ -10,7 +10,8 @@ body {
 
 .tabela-corpo {
     color: rgb(243, 243, 243);
-    width: 70%;
+    width: 80%;
+    max-width: 1700px;
     margin: 20px auto;
     background-color: #2e2e2e;
     padding: 30px;
